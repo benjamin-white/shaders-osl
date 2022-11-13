@@ -1,0 +1,26 @@
+#include "stdosl.h"
+ 
+shader cglColorAngleBlend
+[[ string help = "Blend colors by view angle" ]]
+(
+    color facing_color = color(0, 0, 0)
+        [[ string help = "The color (or texture) that will appear at perpendicular view angle" ]],
+    color side_color = color(1, 1, 1)
+        [[ string help = "The color (or texture) that will appear at grazing view angle" ]],
+    float base_blend = 0.0
+        [[ string help = "The percent of side_color that is mixed with facing_color at perpendicular view angle",
+        float min = 0.0, float max = 1.0]],
+    float curve_exponent = 1.0
+        [[ string help = "A power exponent value by which the blend value is raised to control the blend curve",
+        float min = 0.001, float max = 10.0]],
+    output color color_out = color(1, 1, 1))
+{
+    // calculate the linear facing ratio:
+    float facing_ratio = acos(abs(dot(-I,N))) / M_PI_2;
+    // calculate the curve facing ratio:
+    float final_blend_ratio = pow(facing_ratio , curve_exponent);
+    // blend the facing color:
+    color final_facing_color = (facing_color * (1 - base_blend)) + (side_color * base_blend);
+    // blend and output the final color:
+    color_out = ((final_facing_color * (1 - final_blend_ratio)) + (side_color * final_blend_ratio));
+}

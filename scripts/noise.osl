@@ -1,0 +1,25 @@
+shader noise(
+  float Time = 1.0,
+  point Point = P,
+	output color Perlin = 0.8,
+	output color UPerlin = 0.8,
+	output color Simplex = 0.8,
+	output color USimplex = 0.8
+) {
+
+  float boost = .5;
+  float dampen = .2;
+
+	/* Perlin 4D Noise */
+	Perlin = noise("perlin", Point, Time) + boost;
+
+	/* UPerlin 4D Noise */
+	UPerlin = noise("uperlin", Point, Time) - dampen;
+	
+	/* Simplex 4D Noise */
+	Simplex = noise("simplex", Point, Time) + boost;
+	
+	/* USimplex 4D Noise */
+	USimplex = noise("usimplex", Point, Time) - dampen;
+	
+}
